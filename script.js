@@ -1,5 +1,10 @@
+// Constant variables
+const POMODORO_TIME = 60 * 60;
+const SHORT_BREAK_TIME = 5 * 60;
+const LONG_BREAK_TIME = 10 * 60;
+
 // Global variables
-let timeLeft = 60 * 60; // seconds
+let timeLeft = POMODORO_TIME; // seconds
 let timerInterval;
 let currentInterval = 'pomodoro';
 let backgroundColor = '#F1F1EF'; // Default background color
@@ -22,19 +27,19 @@ const saveBtn = document.getElementById('save-btn');
 // Event listeners for interval buttons
 pomodoroIntervalBtn.addEventListener('click', () => {
   currentInterval = 'pomodoro';
-  timeLeft = 60 * 60;
+  timeLeft = POMODORO_TIME;
   updateTimeLeftTextContent();
 });
 
 shortBreakIntervalBtn.addEventListener('click', () => {
   currentInterval = 'short-break';
-  timeLeft = 5 * 60;
+  timeLeft = SHORT_BREAK_TIME;
   updateTimeLeftTextContent();
 });
 
 longBreakIntervalBtn.addEventListener('click', () => {
   currentInterval = 'long-break';
-  timeLeft = 10 * 60;
+  timeLeft = LONG_BREAK_TIME;
   updateTimeLeftTextContent();
 });
 
@@ -93,19 +98,36 @@ function startTimer() {
   timerInterval = setInterval(() => {
     timeLeft--;
     updateTimeLeftTextContent();
-    if (timeLeft === 0) {
+
+    if (timeLeft <= 0) {
       clearInterval(timerInterval);
+
       if (currentInterval === 'pomodoro') {
+        alert('🎉 Pomodoro finished! Time for a short break.');
+
         timeLeft = 5 * 60;
         currentInterval = 'short-break';
+        updateTimeLeftTextContent();
+
         startTimer();
+
       } else if (currentInterval === 'short-break') {
+        alert('☕ Short break finished! Time for a long break.');
+
         timeLeft = 10 * 60;
         currentInterval = 'long-break';
+        updateTimeLeftTextContent();
+
         startTimer();
+
       } else {
-        timeLeft = 25 * 60;
+        alert('🚀 Long break finished! Ready for another Pomodoro.');
+
+        timeLeft = 60 * 60;
         currentInterval = 'pomodoro';
+        updateTimeLeftTextContent();
+
+        startStopBtn.textContent = 'Start';
       }
     }
   }, 1000);
@@ -154,3 +176,4 @@ function applyUserPreferences() {
 
 // Apply user preferences on page load
 applyUserPreferences();
+updateTimeLeftTextContent();
