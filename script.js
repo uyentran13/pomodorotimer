@@ -7,6 +7,7 @@ const LONG_BREAK_TIME = 10 * 60;
 let timeLeft = POMODORO_TIME; // seconds
 let timerInterval;
 let currentInterval = 'pomodoro';
+let pomodoroCount = 0;
 let backgroundColor = '#F1F1EF'; // Default background color
 let fontColor = '#37352F'; // Default font color
 
@@ -27,6 +28,7 @@ const saveBtn = document.getElementById('save-btn');
 // Event listeners for interval buttons
 pomodoroIntervalBtn.addEventListener('click', () => {
   currentInterval = 'pomodoro';
+  pomodoroCount = 0;
   timeLeft = POMODORO_TIME;
   updateTimeLeftTextContent();
 });
@@ -57,11 +59,11 @@ startStopBtn.addEventListener('click', () => {
 resetBtn.addEventListener('click', () => {
   stopTimer();
   if (currentInterval === 'pomodoro') {
-    timeLeft = 60 * 60;
+    timeLeft = POMODORO_TIME;
   } else if (currentInterval === 'short-break') {
-    timeLeft = 5 * 60;
+    timeLeft = SHORT_BREAK_TIME;
   } else {
-    timeLeft = 10 * 60;
+    timeLeft = LONG_BREAK_TIME;
   }
   updateTimeLeftTextContent();
   startStopBtn.textContent = 'Start';
@@ -103,31 +105,33 @@ function startTimer() {
       clearInterval(timerInterval);
 
       if (currentInterval === 'pomodoro') {
-        alert('🎉 Pomodoro finished! Time for a short break.');
 
-        timeLeft = 5 * 60;
-        currentInterval = 'short-break';
+        pomodoroCount++;
+
+        if (pomodoroCount % 2 === 1) {
+          alert('🎉 Pomodoro finished! Time for a short break.');
+
+          timeLeft = SHORT_BREAK_TIME;
+          currentInterval = 'short-break';
+          
+        } else {
+          alert('🎉 Pomodoro finished! Time for a long break. ☕')
+
+          timeLeft = LONG_BREAK_TIME;
+          currentInterval = 'long-break';
+        }
+
         updateTimeLeftTextContent();
-
-        startTimer();
-
-      } else if (currentInterval === 'short-break') {
-        alert('☕ Short break finished! Time for a long break.');
-
-        timeLeft = 10 * 60;
-        currentInterval = 'long-break';
-        updateTimeLeftTextContent();
-
         startTimer();
 
       } else {
-        alert('🚀 Long break finished! Ready for another Pomodoro.');
+        alert('🚀 Break finished! Time for another Pomodoro.');
 
-        timeLeft = 60 * 60;
+        timeLeft = POMODORO_TIME;
         currentInterval = 'pomodoro';
+        
         updateTimeLeftTextContent();
-
-        startStopBtn.textContent = 'Start';
+        startTimer();
       }
     }
   }, 1000);
