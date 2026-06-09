@@ -8,6 +8,7 @@ let timeLeft = POMODORO_TIME; // seconds
 let timerInterval;
 let currentInterval = 'pomodoro';
 let pomodoroCount = 0;
+let endTime = null;
 let backgroundColor = '#F1F1EF'; // Default background color
 let fontColor = '#37352F'; // Default font color
 
@@ -95,11 +96,13 @@ saveBtn.addEventListener('click', () => {
   settingsModal.style.display = 'none';
 });
 
-Notification.requestPermission();
-
 // Function to show notifications
 function showNotification(title, body) {
-  if ("Notification" in window && Notification.permission === "granted") {
+  if (
+    document.visibilityState === 'hidden' &&
+    "Notification" in window && 
+    Notification.permission === "granted"
+  ) {
     new Notification(title, {
       body: body,
       icon: "favicon.ico" // optional
@@ -109,8 +112,12 @@ function showNotification(title, body) {
 
 // Function to start the timer
 function startTimer() {
+  endTime = Date.now() + timeLeft * 1000;
+  
   timerInterval = setInterval(() => {
-    timeLeft--;
+    const remaining = Math.ceil((endTime - Date.now()) / 1000);
+    
+    timeLeft = Math.max(0, remaining);
     updateTimeLeftTextContent();
 
     if (timeLeft <= 0) {
@@ -146,7 +153,7 @@ function startTimer() {
         startTimer();
       }
     }
-  }, 1000);
+  }, 250); // check 4 times/sec for accuracy
 }
 
 // Function to stop the timer
