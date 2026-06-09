@@ -95,6 +95,18 @@ saveBtn.addEventListener('click', () => {
   settingsModal.style.display = 'none';
 });
 
+Notification.requestPermission();
+
+// Function to show notifications
+function showNotification(title, body) {
+  if ("Notification" in window && Notification.permission === "granted") {
+    new Notification(title, {
+      body: body,
+      icon: "favicon.ico" // optional
+    });
+  }
+}
+
 // Function to start the timer
 function startTimer() {
   timerInterval = setInterval(() => {
@@ -109,13 +121,13 @@ function startTimer() {
         pomodoroCount++;
 
         if (pomodoroCount % 2 === 1) {
-          alert('🎉 Pomodoro finished! Time for a short break.');
+          showNotification('🎉 Pomodoro Finished!','Time for a short break.');
 
           timeLeft = SHORT_BREAK_TIME;
           currentInterval = 'short-break';
           
         } else {
-          alert('🎉 Pomodoro finished! Time for a long break. ☕')
+          showNotification('🎉 Pomodoro Finished!','Time for a long break ☕');
 
           timeLeft = LONG_BREAK_TIME;
           currentInterval = 'long-break';
@@ -125,7 +137,7 @@ function startTimer() {
         startTimer();
 
       } else {
-        alert('🚀 Break finished! Time for another Pomodoro.');
+        showNotification('🎉 Break Finished!','Time for another Pomodoro 🚀');
 
         timeLeft = POMODORO_TIME;
         currentInterval = 'pomodoro';
@@ -176,6 +188,11 @@ function applyUserPreferences() {
     button.style.backgroundColor = backgroundColor;
     button.style.borderColor = fontColor;
   });
+}
+
+// Request notification permission
+if ("Notification" in window && Notification.permission !== "granted") {
+  Notification.requestPermission();
 }
 
 // Apply user preferences on page load
