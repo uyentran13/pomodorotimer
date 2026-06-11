@@ -1,7 +1,7 @@
 // Constant variables
-const POMODORO_TIME = 0.5 * 60;
-const SHORT_BREAK_TIME = 0.5 * 60;
-const LONG_BREAK_TIME = 0.1 * 60;
+const POMODORO_TIME = 60 * 60;
+const SHORT_BREAK_TIME = 5 * 60;
+const LONG_BREAK_TIME = 10 * 60;
 
 // Global variables
 let timeLeft = POMODORO_TIME; // seconds
